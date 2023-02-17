@@ -8,18 +8,18 @@ class Potentiostat:
 
     CURRENT_RANGE_TO_TIA_RESISTOR = {
             '1uA'    : 1650000.0,
-            '10uA'   : 165000.0, 
+            '10uA'   : 165000.0,
             '100uA'  : 16500.0,
             '1000uA' : 1650.0,
             }
     TIA_RESISTOR_TO_CURRENT_RANGE = {v:k for (k,v) in CURRENT_RANGE_TO_TIA_RESISTOR.items()}
 
-    def __init__(self, current_range='1000uA', num_avg=15):
+    def __init__(self, current_range='1000uA', num_avg=16):
 
         self.current_range = current_range
-        self.num_avg = num_avg 
+        self.num_avg = num_avg
 
-        # Hardware connections 
+        # Hardware connections
         self.setp_aout = analogio.AnalogOut(board.A0)
         self.setp_aout_saved_value = 0.0
         self.tia_ain = analogio.AnalogIn(board.A2)
@@ -30,13 +30,13 @@ class Potentiostat:
         # Transimpedance amplifier resistor value
         self.tia_resistor_ohm = self.CURRENT_RANGE_TO_TIA_RESISTOR[current_range]
 
-        # System voltage (vpow) and virtual ground voltage (vgnd) 
-        self.vpow = self.tia_ain.reference_voltage  
-        self.vgnd = 0.5*self.vpow                   
+        # System voltage (vpow) and virtual ground voltage (vgnd)
+        self.vpow = self.tia_ain.reference_voltage
+        self.vgnd = 0.5*self.vpow
 
         # Set initial state
         self.offset = 0.0
-        self.connected = False 
+        self.connected = False
         self.voltage = 0.0
 
     @property
@@ -53,7 +53,7 @@ class Potentiostat:
 
     @averaging.setter
     def averaging(self, num):
-        self.num_avg = num 
+        self.num_avg = num
 
     @property
     def connected(self):
@@ -64,7 +64,7 @@ class Potentiostat:
         if value:
             self.ctr_elect_switch.value = False
         else:
-            self.ctr_elect_switch.value = True 
+            self.ctr_elect_switch.value = True
 
     @property
     def voltage(self):

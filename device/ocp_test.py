@@ -22,7 +22,7 @@ except ImportError:
 
 
 
-class DiscreteTest:
+class OCPTest:
 
 
     DIRECTION_UP = 0
@@ -149,7 +149,7 @@ class DiscreteTest:
         self.half_cycle_count = 0
         self.voltage = self.v_half_cycle
         self.done = False
-        self.pstat.connected = True
+        self.pstat.connected = False
 
 
     def cleanup(self):

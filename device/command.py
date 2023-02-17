@@ -1,6 +1,6 @@
 import json_messaging
 import cyclic_test
-import discrete_test
+import ocp_test
 
 class Handler:
 
@@ -9,12 +9,12 @@ class Handler:
 
         self.scheduler = scheduler
         self.pstat = pstat
-        self.pstat.connected = True
+        self.pstat.connected = False
         self.done = False
 
     def update(self):
         msg = self.receiver.update()
-        if msg: 
+        if msg:
             if 'voltage' in msg:
                 try:
                     voltage = float(msg['voltage'])
@@ -92,10 +92,10 @@ class Handler:
                     test = cyclic_test.CyclicTest(self.pstat,param)
                     if not test.done:
                         self.scheduler.add('cyclic_test', test)
-                elif name == 'discrete':
-                    test = discrete_test.DiscreteTest(self.pstat,param)
+                elif name == 'OCP':
+                    test = ocp_test.OCPTest(self.pstat,param)
                     if not test.done:
-                        self.scheduler.add('discrete_test', test)
+                        self.scheduler.add('ocp_test', test)
                 else:
                     err_msg = {'error': 'unknown test name'}
                     json_messaging.send(err_msg)
@@ -116,4 +116,3 @@ class Handler:
         elif self.receiver.error:
             rsp = {'error': True, 'message': 'parse error'}
             json_messaging.send(rsp)
-

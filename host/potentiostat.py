@@ -7,7 +7,7 @@ class Potentiostat(serial.Serial):
 
     MAX_ABS_VOLTAGE = 1.65
     ALLOWED_CURRENT_RANGE = ('1uA', '10uA', '100uA', '1000uA')
-    ALLOWED_TEST_NAMES = ['cyclic', 'discrete']
+    ALLOWED_TEST_NAMES = ['cyclic', 'OCP']
 
     def __init__(self, port):
         port_param = {'port': port, 'baudrate': 115200, 'timeout': 0.1}
@@ -18,9 +18,9 @@ class Potentiostat(serial.Serial):
 
 
     def throw_away_lines(self):
-        """ 
+        """
         Throw away first few lines. Deals with case where user has updated the firmware
-        which writes a bunch text to the serial port. 
+        which writes a bunch text to the serial port.
         """
         for i in range(self.num_throw_away):
             line = self.readline()
@@ -29,7 +29,7 @@ class Potentiostat(serial.Serial):
     def get_values(self):
         """
         Get current devices values ... connection status, current reading, output voltage,
-        reference voltage, current range. 
+        reference voltage, current range.
         """
         msg_dict = {'':''}
         rsp = self.send_and_receive(msg_dict)
@@ -39,7 +39,7 @@ class Potentiostat(serial.Serial):
 
     def averaging(self, num_average):
         """
-        Set number of averages used for each measure current value. 
+        Set number of averages used for each measure current value.
         """
         if num_average <= 0:
             raise ValueError('averaging must be int > 0')
@@ -54,7 +54,7 @@ class Potentiostat(serial.Serial):
         Set the output current range (uA). Value must be in ALLOW_CURRENT_RANGE list.
         """
         if not range_value in self.ALLOWED_CURRENT_RANGE:
-            raise ValueError('range must be in {}'.format(self.ALLOWED_CURRENT_RANGE)) 
+            raise ValueError('range must be in {}'.format(self.ALLOWED_CURRENT_RANGE))
         msg_dict = {'range': range_value}
         rsp = self.send_and_receive(msg_dict)
         self.error_check_rsp(rsp)
@@ -85,7 +85,7 @@ class Potentiostat(serial.Serial):
 
     def offset(self, offset_value):
         """
-        Set analog output voltage offset. Used for correcting 
+        Set analog output voltage offset. Used for correcting
         """
         if abs(offset_value) > self.MAX_ABS_VOLTAGE:
             raise ValueError('abs(offset) must be < {}'.format(self.MAX_ABS_VOLTAGE))
@@ -97,15 +97,15 @@ class Potentiostat(serial.Serial):
 
     def run_test(self, test_name, test_param):
         """
-        Run voltametric test. 
-        
+        Run voltametric test.
+
         test_name  = name of  test
-        test_param = dictionary of test parameters. 
+        test_param = dictionary of test parameters.
 
         Currently only cyclic voltammetry is implemented.
 
         run_test('cyclic', test_param)
-        
+
         Example params:
         test_param = {
                 'max_voltage'   :  1.5,
@@ -157,7 +157,7 @@ class Potentiostat(serial.Serial):
         while True:
             msg_json = self.readline()
             msg_json = msg_json.strip()
-            msg_dict = json.loads(msg_json.decode('utf-8'))
+            msg_dict = json.loads(msg_json)
             if 'data' in msg_dict:
                 data = msg_dict['data']
                 data_list.append(data)
@@ -187,4 +187,3 @@ class PotentiostatError(Exception):
 
 def convert_A_to_uA(value):
     return 1.0e6*value
-

@@ -8,24 +8,26 @@ if __name__ == '__main__':
         if "USB" in p.description:
             PORT=p.name
 
-output_file = 'data.txt'
+output_file = 'data_ocp.txt'
 
 param = {
+        'setpoint_voltage': 1.0,
         'max_voltage'   :  1.5,
         'min_voltage'   : -1.5,
         'scan_rate'     :  0.20,
-        'start_voltage' : 'min_voltage',
-        'sample_rate'   : 15.0,
-        'cycles'        : 2,
+        'start_voltage' : 'setpoint_voltage',
+        'sample_rate'   : 200,
+        'cycles'        : 200,
+        'duration'      : 300.0
         }
 
 pstat = Potentiostat(PORT)
 pstat.range('1000uA')
-pstat.averaging(50)
+pstat.averaging(16)
 pstat.offset(0.0)
 
-pstat.connected(True)
-t, v, i = pstat.run_test('cyclic', param)
+pstat.connected(False)
+t, v, i = pstat.run_test('OCP', param)
 pstat.connected(False)
 
 i = 1.0e6*i # convert to uA
@@ -40,13 +42,8 @@ plt.plot(t,i)
 plt.ylabel('(uA)')
 plt.xlabel('time (s)')
 plt.grid(True)
-
-plt.figure(2)
-plt.plot(v,i)
-plt.xlabel('(V)')
-plt.ylabel('(uA)')
-plt.grid(True)
 plt.show()
+
 
 with open(output_file,'w') as f:
     for (tt,vv,ii) in zip(t,v,i):
