@@ -7,7 +7,7 @@ class Potentiostat(serial.Serial):
 
     MAX_ABS_VOLTAGE = 1.65
     ALLOWED_CURRENT_RANGE = ('1uA', '10uA', '100uA', '1000uA')
-    ALLOWED_TEST_NAMES = ['cyclic', 'OCP']
+    ALLOWED_TEST_NAMES = ['cyclic', 'OCP', 'discrete']
 
     def __init__(self, port):
         port_param = {'port': port, 'baudrate': 115200, 'timeout': 0.1}

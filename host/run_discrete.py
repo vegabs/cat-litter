@@ -1,5 +1,12 @@
 import matplotlib.pyplot as plt
 from potentiostat import  Potentiostat
+import serial.tools.list_ports
+
+if __name__ == '__main__':
+    ports = list(serial.tools.list_ports.comports())
+    for p in ports:
+        if "USB" in p.description:
+            PORT=p.name
 
 output_file = 'data_discrete.txt'
 
@@ -9,12 +16,12 @@ param = {
         'min_voltage'   : -1.5,
         'scan_rate'     :  0.20,
         'start_voltage' : 'setpoint_voltage',
-        'sample_rate'   : 200,
-        'cycles'        : 10,
-        'duration'      : 10.0
+        'sample_rate'   : 15.0,
+        'cycles'        : 1,
+        'duration'      : 7.0
         }
 
-pstat = Potentiostat('COM4')
+pstat = Potentiostat(PORT)
 pstat.range('1000uA')
 pstat.averaging(50)
 pstat.offset(0.0)
