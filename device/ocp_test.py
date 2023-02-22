@@ -116,8 +116,11 @@ class OCPTest:
             voltage = self.v_half_cycle
             self.half_cycle_count += 1
             # self.change_direction()
-            if self.half_cycle_count >= 2*self.param['cycles']:
-                self.done = True
+            # if self.half_cycle_count >= 2*self.param['cycles']:
+            #     self.done = True
+
+            if self.t_now >= self.t_start + self.param['duration']:
+               self.done = True
 
         self.voltage = voltage
         if self.t_now >= self.t_next_sample or self.done:
