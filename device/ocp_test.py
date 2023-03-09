@@ -24,12 +24,7 @@ except ImportError:
 
 class OCPTest:
 
-
-    # DIRECTION_UP = 0
-    # DIRECTION_DOWN = 1
-    #NO_DIRECTION = 2
     MAX_SAMPLE_RATE = 200.0
-
 
     def __init__(self,pstat,param):
         self.param = {}
@@ -37,12 +32,8 @@ class OCPTest:
         self.pstat = pstat
         self.t_start = 0.0
         self.t_now = 0.0
-        #self.t_half_cycle = 0.0 #confusing name, but I think it's just the timestamp of the last sample
         self.t_last_sample = 0.0
         self.t_next_sample = 0.0
-        #self.v_half_cycle = 0.0
-        #self.half_cycle_count = 0
-        #self.direction = self.NO_DIRECTION
         self.voltage_range_max =  0.5*self.pstat.vpow
         self.voltage_range_min = -0.5*self.pstat.vpow
         self.sample_period = 1.0
@@ -85,77 +76,30 @@ class OCPTest:
         return self.t_now - self.t_start
 
 
-    # @property
-    # def sign(self):
-    #     if self.direction == self.DIRECTION_UP:
-    #         return  1.0
-    #     else:
-    #         return -1.0
-
-
     def update(self):
         self.t_now = time_in_secs()
-        #dt = self.t_now - self.t_half_cycle
         dt = self.t_now - self.t_last_sample
-        # voltage = self.v_half_cycle + self.sign*dt*self.param['scan_rate']
-        #voltage = self.v_half_cycle
         voltage = self.param['setpoint_voltage']
-        #new_cycle = False
-
-        # if voltage >= self.param['max_voltage'] and self.direction == self.DIRECTION_UP:
-        #     self.v_half_cycle = self.param['max_voltage']
-        #     new_cycle = True
-        # if voltage <= self.param['min_voltage'] and self.direction == self.DIRECTION_DOWN:
-        #     self.v_half_cycle = self.param['min_voltage']
-        #     new_cycle = True
-
-        #if voltage == self.param['setpoint_voltage'] and self.direction == self.NO_DIRECTION: #this is always true
-            #self.v_half_cycle = self.param['setpoint_voltage']
-            #new_cycle = True
-
-        #if new_cycle:
-            #self.t_half_cycle = self.t_now
         self.t_last_sample = self.t_now
-            #voltage = self.v_half_cycle
-            #voltage = self.param['setpoint_voltage'] #not needed bc it's already set earlier within this loop, and in setup
-            #self.half_cycle_count += 1
-            # self.change_direction()
-            # if self.half_cycle_count >= 2*self.param['cycles']:
-            #     self.done = True
+
         if self.t_now >= self.t_start + self.param['duration']:
               self.done = True
 
-        #self.voltage = self.param['setpoint_voltage'] #not needed bc it's already set earlier within this loop, and in setup
         if (self.t_now >= self.t_next_sample) or self.done:
-            data_dict = {'data': {'t': self.elapsed_time, 'v': self.ref_voltage, 'i': self.current}}
+            current_uA = 1.0e6*self.current
+            data_dict = {'data': {'t': self.elapsed_time, 'v': self.ref_voltage, 'i': current_uA}}
             if self.done:
                 data_dict['done'] = True
-            send(data_dict)
+            #send(data_dict)
+            print(data_dict)
             self.t_next_sample = self.t_now + self.sample_period
 
 
-    # def change_direction(self):
-    #     self.direction = self.NO_DIRECTION
-        # if self.direction == self.DIRECTION_UP:
-        #     #self.direction = self.DIRECTION_DOWN
-        #     self.direction = self.NO_DIRECTION
-        # else:
-        #     #self.direction = self.DIRECTION_UP
-        #     self.direction = self.NO_DIRECTION
-
-
     def setup(self):
-        #if self.param['start_voltage'] == 'setpoint_voltage':
-        #self.v_half_cycle = self.param['setpoint_voltage']
-        #self.direction = self.NO_DIRECTION
-
         self.t_now = time_in_secs()
         self.t_start = self.t_now
-        #self.t_half_cycle = self.t_now
         self.t_last_sample = self.t_now
         self.t_next_sample = self.t_now
-        #self.half_cycle_count = 0
-        #self.voltage = self.v_half_cycle
         self.voltage = self.param['setpoint_voltage']
         self.done = False
         self.pstat.connected = False
@@ -170,12 +114,8 @@ class OCPTest:
 
         # Check that we have all required items in param
         expected_keys = [
-                #'max_voltage',
-                #'min_voltage',
                 'scan_rate',
-                #'start_voltage',
                 'sample_rate',
-                #'cycles',
                 'duration',
                 'setpoint_voltage'
                 ]
@@ -189,8 +129,6 @@ class OCPTest:
 
         # Check that float values are of correct type
         float_keys  = [
-                #'max_voltage',
-                #'min_voltage',
                 'sample_rate',
                 'scan_rate',
                 'duration',
@@ -202,19 +140,9 @@ class OCPTest:
             except(ValueError, TypeError):
                 return False, '{} must be float'.format(key)
 
-        # Check that integer items are of correct type
-        # integer_keys = ['cycles']
-        # for key in integer_keys:
-        #     try:
-        #         param_tmp[key] = int(param_tmp[key])
-        #     except(ValueError, TypeError):
-        #         return False, '{} must be int'.format(key)
-
-        # Check that certain values are > 0
         positive_keys = [
                 'scan_rate',
                 'sample_rate',
-                #'cycles',
                 'duration'
                 ]
         for key in positive_keys:
@@ -227,10 +155,6 @@ class OCPTest:
                 return False, '{} > voltage_range_max'.format(key)
             if param_tmp[key] < self.voltage_range_min:
                 return False, '{} < voltage_range_min'.format(key)
-
-        # Check that start_voltage is setpoint_voltage
-        # if not param_tmp['start_voltage'] in ['setpoint_voltage']:
-        #     return False, 'start_voltage must be setpoint_voltage'
 
         # Check that sample rate is less or equal than maximum allowed sample rate
         if param_tmp['sample_rate'] > self.MAX_SAMPLE_RATE:

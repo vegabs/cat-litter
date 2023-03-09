@@ -4,23 +4,28 @@ import ocp_test
 
 class Handler:
 
-    def __init__(self,scheduler,pstat):
+    def __init__(self,scheduler,pstat,parameters = {}):
         self.receiver = json_messaging.Receiver()
 
         self.scheduler = scheduler
         self.pstat = pstat
         self.pstat.connected = False
         self.done = False
+        if parameters:
+            self.msg = parameters
 
     def update(self):
         msg = self.receiver.update()
+        if self.msg:
+            msg = self.msg
+            self.msg = {}
         if msg:
             if 'voltage' in msg:
                 try:
                     voltage = float(msg['voltage'])
                 except(ValueError, TypeError):
                     err_msg = {'error': 'voltage must be float'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
                 self.pstat.voltage = voltage
 
@@ -29,7 +34,7 @@ class Handler:
                     connected = bool(msg['connected'])
                 except(ValueError, TypeError):
                     err_msg = {'error': 'connected must be bool'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
                 self.pstat.connected = connected
 
@@ -38,7 +43,7 @@ class Handler:
                     averaging = int(msg['averaging'])
                 except(ValueError, TypeError):
                     err_msg = {'error': 'averaging must be int'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
                 self.pstat.averaging = averaging
 
@@ -47,7 +52,7 @@ class Handler:
                     offset = float(msg['offset'])
                 except(ValueError, TypeError):
                     err_msg = {'error': 'offset must be float'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
                 self.pstat.offset = offset
 
@@ -56,7 +61,7 @@ class Handler:
                     self.pstat.current_range = msg['range']
                 except KeyError:
                     err_msg = {'error': 'current range not found'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
             if 'test' in msg:
@@ -64,28 +69,28 @@ class Handler:
                     test = dict(msg['test'])
                 except(ValueError, TypeError):
                     err_msg = {'error': 'test must be dictionary'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
                 try:
                     name = test['name']
                 except KeyError:
                     err_msg = {'error': 'test missing name'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
                 try:
                     param = test['param']
                 except(ValueError, TypeError):
                     err_msg = {'error': 'test missing param'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
                 try:
                     param = dict(param)
                 except(ValueError, TypeError):
                     err_msg = {'error': 'param must be dict'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
                 if name == 'cyclic':
@@ -98,7 +103,7 @@ class Handler:
                         self.scheduler.add('ocp_test', test)
                 else:
                     err_msg = {'error': 'unknown test name'}
-                    json_messaging.send(err_msg)
+                    #json_messaging.send(err_msg)
                     return
 
 
@@ -112,7 +117,7 @@ class Handler:
                     'offset'       : self.pstat.offset,
                     'range'        : self.pstat.current_range,
                     }
-            json_messaging.send(rsp)
+            #json_messaging.send(rsp)
         elif self.receiver.error:
             rsp = {'error': True, 'message': 'parse error'}
             json_messaging.send(rsp)
