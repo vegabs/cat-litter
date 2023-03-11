@@ -20,6 +20,7 @@ except ImportError:
     def send(msg):
         print('send: {}'.format(json.dumps(msg)))
 
+from json_messaging import send_to_self
 
 
 class OCPTest:
@@ -78,7 +79,6 @@ class OCPTest:
 
     def update(self):
         self.t_now = time_in_secs()
-        dt = self.t_now - self.t_last_sample
         voltage = self.param['setpoint_voltage']
         self.t_last_sample = self.t_now
 
@@ -90,8 +90,9 @@ class OCPTest:
             data_dict = {'data': {'t': self.elapsed_time, 'v': self.ref_voltage, 'i': current_uA}}
             if self.done:
                 data_dict['done'] = True
-            #send(data_dict)
+                send_to_self({'pump':5.0})
             print(data_dict)
+            #send(data_dict)
             self.t_next_sample = self.t_now + self.sample_period
 
 

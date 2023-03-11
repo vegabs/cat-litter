@@ -4,6 +4,8 @@ import supervisor
 
 class Receiver:
 
+    msg_to_self = {}
+
     def __init__(self):
         self.buffer = []
         self.error_flag = False
@@ -32,9 +34,15 @@ class Receiver:
             except ValueError:
                 self.error_flag = True
                 self.error_count += 1
+        elif self.msg_to_self:
+            message_dict = self.msg_to_self
+            self.msg_to_self = {}
         return message_dict
 
 
 
 def send(msg):
     print(json.dumps(msg))
+
+def send_to_self(msg):
+    Receiver.msg_to_self = msg

@@ -4,6 +4,14 @@ import scheduler
 import potentiostat
 import cyclic_test
 import ocp_test
+import pump
+
+try:
+    from json_messaging import send
+except ImportError:
+    import json
+    def send(msg):
+        print('send: {}'.format(json.dumps(msg)))
 
 pstat = potentiostat.Potentiostat(current_range='1000uA')
 parameters = {
@@ -17,12 +25,16 @@ parameters = {
                                 'setpoint_voltage': 0.000001,
                                 'scan_rate'     :  0.20,
                                 'sample_rate'   : 16.0,
-                                'duration'      : 7.0
+                                'duration'      : 4.0
                                 }
                         }
                 }
 job_scheduler = scheduler.Scheduler()
-job_scheduler.add('command', command.Handler(job_scheduler, pstat, parameters))
+commander = command.Handler(job_scheduler, pstat)
+job_scheduler.add('command', commander)
+commander.msg = parameters
 
 while True:
     job_scheduler.update()
+    # if (not bool(job_scheduler.table)):
+    #     print("empty")
