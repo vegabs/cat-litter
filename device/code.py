@@ -17,6 +17,8 @@ except ImportError:
     def send(msg):
         print('send: {}'.format(json.dumps(msg)))
 
+#pins in use: A0, A2, A4, RX, TX, 13, SDA, SCL
+
 pstat = potentiostat.Potentiostat(current_range='1000uA')
 parameters = {
                 'range':'1000uA',
@@ -36,13 +38,11 @@ parameters = {
 job_scheduler = scheduler.Scheduler()
 commander = command.Handler(job_scheduler, pstat)
 job_scheduler.add('command', commander)
-#commander.msg = parameters
-cat_sensor = tof.ToF()
+commander.msg = parameters #GABY: uncomment this line
+#cat_sensor = tof.ToF() #GABY: comment out this line
 
 while True:
     job_scheduler.update()
 
-    if len(job_scheduler.table) <= 1:
-        cat_sensor.update()
-    # if (not bool(job_scheduler.table)):
-    #     print("empty")
+    #if len(job_scheduler.table) <= 1: #GABY: comment out this line
+        #cat_sensor.update() #GABY: comment out this line
