@@ -24,6 +24,23 @@ class Handler:
             self.msg = {}
 
         if msg:
+            if 'default ocp' in msg:
+                msg = {
+                        'range':'1000uA',
+                        'averaging':16,
+                        'offset':0.0,
+                        'connected':False,
+                        'test': {
+                                'name': 'OCP',
+                                'param': {
+                                        'setpoint_voltage': 0.000001,
+                                        'scan_rate'     :  0.20,
+                                        'sample_rate'   : 16.0,
+                                        'duration'      : 4.0
+                                        }
+                                }
+                        }
+                        
             if 'pump' in msg:
                 pump_duration = msg['pump']
                 pump1 = pump.Pump(pump_duration)

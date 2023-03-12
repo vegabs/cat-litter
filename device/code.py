@@ -1,10 +1,14 @@
-import time
+try:
+    from time import monotonic as time_in_secs
+except ImportError:
+    from time import time as time_in_secs
 import command
 import scheduler
 import potentiostat
 import cyclic_test
 import ocp_test
 import pump
+import tof
 
 try:
     from json_messaging import send
@@ -32,9 +36,13 @@ parameters = {
 job_scheduler = scheduler.Scheduler()
 commander = command.Handler(job_scheduler, pstat)
 job_scheduler.add('command', commander)
-commander.msg = parameters
+#commander.msg = parameters
+cat_sensor = tof.ToF()
 
 while True:
     job_scheduler.update()
+
+    if len(job_scheduler.table) <= 1:
+        cat_sensor.update()
     # if (not bool(job_scheduler.table)):
     #     print("empty")

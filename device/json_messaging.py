@@ -34,9 +34,9 @@ class Receiver:
             except ValueError:
                 self.error_flag = True
                 self.error_count += 1
-        elif self.msg_to_self:
-            message_dict = self.msg_to_self
-            self.msg_to_self = {}
+        elif Receiver.msg_to_self:
+            message_dict = Receiver.msg_to_self
+            Receiver.msg_to_self = {}
         return message_dict
 
 
