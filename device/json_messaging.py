@@ -45,4 +45,11 @@ def send(msg):
     print(json.dumps(msg))
 
 def send_to_self(msg):
-    Receiver.msg_to_self = msg
+    if isinstance(msg, str) and msg[0] == '{':
+        try:
+            msgD = json.loads(msg)
+            Receiver.msg_to_self = msgD
+        except ValueError:
+            print("Message not correct. Be sure to use double quotation marks! Not '' these.")
+    else:
+        Receiver.msg_to_self = msg

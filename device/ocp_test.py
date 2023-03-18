@@ -21,6 +21,7 @@ except ImportError:
         print('send: {}'.format(json.dumps(msg)))
 
 from json_messaging import send_to_self
+from ble_messaging import write_ble
 
 
 class OCPTest:
@@ -92,6 +93,7 @@ class OCPTest:
                 data_dict['done'] = True
                 send_to_self({'pump':5.0})
             print(data_dict)
+            write_ble(data_dict)
             #send(data_dict)
             self.t_next_sample = self.t_now + self.sample_period
 
