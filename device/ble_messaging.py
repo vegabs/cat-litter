@@ -44,6 +44,6 @@ def read_ble():
 
 def write_ble(msg):
     # Now write it!
-    msg = str(msg)
+    msg = str(msg) + '$'
     print(str.encode(msg))
     bluefruit.uart_tx(str.encode(msg))

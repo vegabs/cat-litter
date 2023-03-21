@@ -52,10 +52,7 @@ while True:
             ble_msg = ble_messaging.read_ble()
             if ble_msg:
                 send_to_self(ble_msg)
-            # Now write it!
-            # print("Writing reverse...")
-            # send = []
-            # for i in range(len(resp), 0, -1):
-            #     send.append(resp[i-1])
-            # print(bytes(send))
-            # bluefruit.uart_tx(bytes(send))
+
+            #simple example write
+            # writer= {"data": {"t": 0, "v": 0, "i": 0}}
+            # ble_messaging.write_ble(writer)
