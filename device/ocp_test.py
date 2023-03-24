@@ -80,7 +80,6 @@ class OCPTest:
 
     def update(self):
         self.t_now = time_in_secs()
-        voltage = self.param['setpoint_voltage']
         self.t_last_sample = self.t_now
 
         if self.t_now >= self.t_start + self.param['duration']:
@@ -91,7 +90,7 @@ class OCPTest:
             data_dict = {'data': {'t': self.elapsed_time, 'v': self.ref_voltage, 'i': current_uA}}
             if self.done:
                 data_dict['done'] = True
-                send_to_self({'pump':5.0})
+                send_to_self({'pump':3.0})
             print(data_dict)
             write_ble(data_dict)
             #send(data_dict)
@@ -117,7 +116,6 @@ class OCPTest:
 
         # Check that we have all required items in param
         expected_keys = [
-                'scan_rate',
                 'sample_rate',
                 'duration',
                 'setpoint_voltage'
@@ -133,7 +131,6 @@ class OCPTest:
         # Check that float values are of correct type
         float_keys  = [
                 'sample_rate',
-                'scan_rate',
                 'duration',
                 'setpoint_voltage'
                 ]
@@ -144,7 +141,6 @@ class OCPTest:
                 return False, '{} must be float'.format(key)
 
         positive_keys = [
-                'scan_rate',
                 'sample_rate',
                 'duration'
                 ]

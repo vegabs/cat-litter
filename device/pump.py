@@ -10,7 +10,7 @@ class Pump:
 
     switch = digitalio.DigitalInOut(board.D12)
     switch.direction = digitalio.Direction.OUTPUT
-    
+
     def __init__(self, duration):
         self.done = False
         self.duration = duration

@@ -34,13 +34,12 @@ class Handler:
                                 'name': 'OCP',
                                 'param': {
                                         'setpoint_voltage': 0.000001,
-                                        'scan_rate'     :  0.20,
                                         'sample_rate'   : 16.0,
                                         'duration'      : 4.0
                                         }
                                 }
                         }
-                        
+
             if 'pump' in msg:
                 pump_duration = msg['pump']
                 pump1 = pump.Pump(pump_duration)

@@ -27,8 +27,7 @@ parameters = {
                 'test': {
                         'name': 'OCP',
                         'param': {
-                                'setpoint_voltage': 0.000001,
-                                'scan_rate'     :  0.20,
+                                'setpoint_voltage': 0.0,
                                 'sample_rate'   : 16.0,
                                 'duration'      : 4.0
                                 }

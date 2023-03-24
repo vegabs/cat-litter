@@ -12,7 +12,6 @@ output_file = 'data_ocp.txt'
 
 param = {
         'setpoint_voltage': 0.000001,
-        'scan_rate'     :  0.20,
         'sample_rate'   : 16.0,
         'duration'      : 7.0
         }
