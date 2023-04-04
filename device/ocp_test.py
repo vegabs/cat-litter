@@ -21,14 +21,15 @@ except ImportError:
         print('send: {}'.format(json.dumps(msg)))
 
 from json_messaging import send_to_self
-from ble_messaging import write_ble
+import ble_messaging
 
+from offset import offsetV
 
 class OCPTest:
-
     MAX_SAMPLE_RATE = 200.0
 
     def __init__(self,pstat,param):
+        ble_messaging.write_ble("test starting")
         self.param = {}
         self.done = False
         self.pstat = pstat
@@ -81,30 +82,37 @@ class OCPTest:
     def update(self):
         self.t_now = time_in_secs()
         self.t_last_sample = self.t_now
+        offsetV(self.pstat,self.pstat.offset,self.oc)
+        self.oc = self.current
 
         if self.t_now >= self.t_start + self.param['duration']:
-              self.done = True
+            self.done = True
 
         if (self.t_now >= self.t_next_sample) or self.done:
             current_uA = 1.0e6*self.current
-            data_dict = {'data': {'t': self.elapsed_time, 'v': self.ref_voltage, 'i': current_uA}}
+            ble_messaging.test_data.append({'t': self.elapsed_time, 'v': self.ref_voltage, 'i': current_uA})
+
             if self.done:
-                data_dict['done'] = True
+                ble_messaging.test_data[-1]["done"]=True
                 send_to_self({'pump':3.0})
-            print(data_dict)
-            write_ble(data_dict)
+            if (not(round(self.elapsed_time%1.5,1))):
+                ble_messaging.write_ble(ble_messaging.test_data)
+            #write_ble(data_dict)
             #send(data_dict)
             self.t_next_sample = self.t_now + self.sample_period
 
 
     def setup(self):
+        ble_messaging.test_data = []
         self.t_now = time_in_secs()
         self.t_start = self.t_now
         self.t_last_sample = self.t_now
         self.t_next_sample = self.t_now
+        self.oc = offsetV(self.pstat, self.param['setpoint_voltage'])
         self.voltage = self.param['setpoint_voltage']
         self.done = False
         self.pstat.connected = False
+
 
 
     def cleanup(self):

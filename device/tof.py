@@ -25,9 +25,9 @@ class ToF:
         self.get_ready = False
 
     def sensing(self):
-        if self.sensed and self.sensor.range < 300:
+        if self.sensed and self.sensor.range < 400:
             pass
-        elif not self.sensed and self.sensor.range < 300:
+        elif not self.sensed and self.sensor.range < 400:
             self.sensed = True
             self.sensed_t = time_in_secs()
         else:

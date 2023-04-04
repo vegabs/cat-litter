@@ -35,7 +35,7 @@ class Handler:
                                 'param': {
                                         'setpoint_voltage': 0.0,
                                         'sample_rate'   : 16.0,
-                                        'duration'      : 4.0
+                                        'duration'      : 20.0
                                         }
                                 }
                         }

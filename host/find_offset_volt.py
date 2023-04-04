@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     step = 0.02
     scale = 0.8
-    voltage = 1.65
+    voltage = 0
     current_tol = 1.0e-8
     sleep_dt = 0.5
     direction = None
@@ -26,6 +26,7 @@ if __name__ == '__main__':
     pstat = Potentiostat(PORT)
     rsp = pstat.averaging(100)
     rsp = pstat.connected(True)
+    pstat.connected(False)
 
     current = get_current_with_sleep(pstat, voltage, sleep_dt)
     print('starting current i: {}'.format(current))
@@ -56,22 +57,9 @@ if __name__ == '__main__':
                 step *= scale
 
         print(' v: {:1.5e}, i: {:1.5e}, s: {:1.5e}'.format(voltage, current, step),direction)
-        if abs(current) <= current_tol:
+        if abs(round(current,10)) <= current_tol:
             done = True
 
     print('done')
     print()
     print('offset voltage: {}'.format(voltage))
-
-
-
-
-
-
-
-
-
-
-
-
-

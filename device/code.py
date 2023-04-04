@@ -5,9 +5,6 @@ except ImportError:
 import command
 import scheduler
 import potentiostat
-import cyclic_test
-import ocp_test
-import pump
 import tof
 try:
     from json_messaging import send
@@ -43,15 +40,16 @@ ble_messaging.connect_ble()
 while True:
     job_scheduler.update()
 
+    #if time_in_secs()%80000:
+        #print("main", ble_messaging.test_data)
     if len(job_scheduler.table) <= 1:
         cat_sensor.update()
 
         # Check our connection status every 3 seconds
-        if time_in_secs()%10:
+        if round(time_in_secs()%3):
             ble_msg = ble_messaging.read_ble()
             if ble_msg:
                 send_to_self(ble_msg)
-
             #simple example write
             # writer= {"data": {"t": 0, "v": 0, "i": 0}}
             # ble_messaging.write_ble(writer)

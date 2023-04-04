@@ -43,5 +43,5 @@ class Pump:
             if self.done:
                 self.switch.value = False
             else:
-                #self.switch.value = True
-                print('placeholder')
+                self.switch.value = True
+                print('pumping')
