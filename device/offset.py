@@ -10,8 +10,13 @@ except ImportError:
             self.current = 0.0
             self.vpow = 3.3
 
+from potentiostat import clamp
+
+def num_to_range(num, inMin, inMax, outMin, outMax):
+    return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax - outMin))
+
 def get_current_with_sleep(pstat, voltage, sleep_dt):
-    pstat.offset = voltage
+    pstat.offset = clamp(voltage,clamp(pstat.voltage,-1.64,-0.015), clamp(pstat.voltage,0.015,1.64))
     time.sleep(sleep_dt)
     rsp = pstat.current
     return rsp

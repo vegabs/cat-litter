@@ -57,8 +57,9 @@ def write_ble(msg):
             m["data"]["v"]+=i["v"]
             m["data"]["i"]+=i["i"]
         m["data"]["t"]=m["data"]["t"]/len(test_data)
-        m["data"]["v"]=m["data"]["t"]/len(test_data)
-        m["data"]["i"]=m["data"]["t"]/len(test_data)
+        m["data"]["v"]=m["data"]["v"]/len(test_data)
+        m["data"]["i"]=m["data"]["i"]/len(test_data)
+        m["done"]=test_data[-1].get("done",False)
         msg = str(m) + '$'
         bluefruit.uart_tx(str.encode(msg))
         test_data=[]

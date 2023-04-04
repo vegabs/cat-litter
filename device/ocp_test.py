@@ -82,8 +82,7 @@ class OCPTest:
     def update(self):
         self.t_now = time_in_secs()
         self.t_last_sample = self.t_now
-        offsetV(self.pstat,self.pstat.offset,self.oc)
-        self.oc = self.current
+
 
         if self.t_now >= self.t_start + self.param['duration']:
             self.done = True
@@ -94,8 +93,11 @@ class OCPTest:
 
             if self.done:
                 ble_messaging.test_data[-1]["done"]=True
+                ble_messaging.write_ble(ble_messaging.test_data)
                 send_to_self({'pump':3.0})
-            if (not(round(self.elapsed_time%1.5,1))):
+            if (len(ble_messaging.test_data) >= 16):
+                offsetV(self.pstat,self.pstat.offset,self.oc)
+                self.oc = self.current
                 ble_messaging.write_ble(ble_messaging.test_data)
             #write_ble(data_dict)
             #send(data_dict)
