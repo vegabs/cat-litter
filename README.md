@@ -1,2 +1,2 @@
-# cat-litter
-Interactive Organisms Lab's project
+# Cat Litter
+Project developed in collaboration with the Interactive Organisms Lab (https://iolab.ucdavis.edu/), UC Davis. Paper coming soon... 
