@@ -40,6 +40,21 @@ class Handler:
                                         }
                                 }
                         }
+            if 'default ca' in msg:
+                msg = {
+                        'range':'1000uA',
+                        'averaging':16,
+                        'offset':0.0,
+                        'connected':False,
+                        'test': {
+                                'name': 'CA',
+                                'param': {
+                                        'setpoint_voltage': 0.66,
+                                        'sample_rate'   : 16.0,
+                                        'duration'      : 20.0
+                                        }
+                                }
+                        }
 
             if 'pump' in msg:
                 pump_duration = msg['pump']

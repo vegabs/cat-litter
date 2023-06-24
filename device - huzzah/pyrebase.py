@@ -80,23 +80,29 @@ class Firebase:
         self.auth_domain = config["authDomain"]
         self.database_url = config["databaseURL"]
         self.storage_bucket = config["storageBucket"]
-        self.credentials = config["credentials"]
         pool = socketpool.SocketPool(wifi.radio)
         self.requests = adafruit_requests.Session(pool, ssl.create_default_context())
-        scopes = [
-            'https://www.googleapis.com/auth/cloud-platform',
-            'https://www.googleapis.com/auth/firebase',
-            'https://www.googleapis.com/auth/firebase.database',
-            'https://www.googleapis.com/auth/userinfo.email'
-        ]
-
-        self.credentials = self.auth().sign_in_with_email_and_password(self.credentials["email"], self.credentials["password"])
         #  prints MAC address to REPL
         print("My MAC addr:", [hex(i) for i in wifi.radio.mac_address])
-
         #  prints IP address to REPL
         print("My IP address is", wifi.radio.ipv4_address)
 
+        if config.get("credentials"):
+            scopes = [
+                'https://www.googleapis.com/auth/cloud-platform',
+                'https://www.googleapis.com/auth/firebase',
+                'https://www.googleapis.com/auth/firebase.database',
+                'https://www.googleapis.com/auth/userinfo.email'
+            ]
+
+            if config["credentials"].get("email") and config["credentials"].get("password"):
+                self.credentials = config["credentials"]
+                self.credentials = self.auth().sign_in_with_email_and_password(config["credentials"]["email"], config["credentials"]["password"])
+            else:
+                try:
+                    self.credentials = bytes(config["credentials"], "utf-8")
+                except:
+                    print("service account not connected")
         # if config.get("serviceAccount"):
         #     scopes = [
         #         'https://www.googleapis.com/auth/firebase.database',

@@ -37,13 +37,20 @@ print("My MAC addr:", [hex(i) for i in wifi.radio.mac_address])
 #  prints IP address to REPL
 print("My IP address is", wifi.radio.ipv4_address)
 
+# no auth
 config = {
   "apiKey": os.getenv('APIKEY'),
   "authDomain": "circat-purrtentio.firebaseapp.com",
   "databaseURL": "https://circat-purrtentio-default-rtdb.firebaseio.com",
-  "storageBucket": "circat-purrtentio.appspot.com",
-  "credentials": {"email": os.getenv("EMAIL"), "password": os.getenv("PASSWORD")}
+  "storageBucket": "circat-purrtentio.appspot.com"
 }
+
+# email account
+#config["credentials"] = {"email": os.getenv("EMAIL"), "password": os.getenv("PASSWORD")}
+
+# service account
+#config["credentials"] = os.getenv("CRED")
+
 
 pyrebase.initialize_app(config)
 
@@ -80,7 +87,7 @@ while True:
         cat_sensor.update()
 
         # Check our connection status every 3 seconds
-        if round(time_in_secs()%3):
+        if round(time_in_secs()%10):
             wifi_msg = pyrebase.db.get()
             if wifi_msg:
                 # send_to_self(wifi_msg)

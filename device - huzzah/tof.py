@@ -44,6 +44,6 @@ class ToF:
             self.get_ready = True
             print('ready')
         if self.get_ready and not self.sensed:
-            print('ocp time')
-            send_to_self({'default ocp'})
+            print('ca test')
+            send_to_self({'default ca'})
             self.get_ready = False
