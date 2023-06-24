@@ -82,10 +82,6 @@ class Firebase:
         self.storage_bucket = config["storageBucket"]
         pool = socketpool.SocketPool(wifi.radio)
         self.requests = adafruit_requests.Session(pool, ssl.create_default_context())
-        #  prints MAC address to REPL
-        print("My MAC addr:", [hex(i) for i in wifi.radio.mac_address])
-        #  prints IP address to REPL
-        print("My IP address is", wifi.radio.ipv4_address)
 
         if config.get("credentials"):
             scopes = [
@@ -103,6 +99,8 @@ class Firebase:
                     self.credentials = bytes(config["credentials"], "utf-8")
                 except:
                     print("service account not connected")
+        else:
+            self.credentials = None
         # if config.get("serviceAccount"):
         #     scopes = [
         #         'https://www.googleapis.com/auth/firebase.database',

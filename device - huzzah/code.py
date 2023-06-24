@@ -43,10 +43,10 @@ config = {
   "authDomain": "circat-purrtentio.firebaseapp.com",
   "databaseURL": "https://circat-purrtentio-default-rtdb.firebaseio.com",
   "storageBucket": "circat-purrtentio.appspot.com"
-}
+  }
 
 # email account
-#config["credentials"] = {"email": os.getenv("EMAIL"), "password": os.getenv("PASSWORD")}
+config["credentials"] = {"email": os.getenv("EMAIL"), "password": os.getenv("PASSWORD")}
 
 # service account
 #config["credentials"] = os.getenv("CRED")
@@ -87,7 +87,7 @@ while True:
         cat_sensor.update()
 
         # Check our connection status every 3 seconds
-        if round(time_in_secs()%10):
+        if not round(time_in_secs()%5):
             wifi_msg = pyrebase.db.get()
             if wifi_msg:
                 # send_to_self(wifi_msg)
